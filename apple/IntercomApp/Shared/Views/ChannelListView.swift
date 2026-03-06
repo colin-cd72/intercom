@@ -27,7 +27,11 @@ public struct ChannelListView: View {
             }
             .padding(.horizontal)
             .padding(.vertical, 8)
+            #if os(macOS)
+            .background(Color(.controlBackgroundColor))
+            #else
             .background(Color(.secondarySystemBackground))
+            #endif
 
             Divider()
 
@@ -121,7 +125,7 @@ struct ChannelRow: View {
 struct ChannelListView_Previews: PreviewProvider {
     static var previews: some View {
         ChannelListView()
-            .environmentObject(IntercomManager())
+            .environmentObject(IntercomManager.shared)
             .frame(width: 250, height: 400)
     }
 }

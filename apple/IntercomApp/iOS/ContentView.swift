@@ -2,8 +2,7 @@ import SwiftUI
 
 /// Main content view for iOS
 struct ContentView: View {
-    @StateObject private var intercomManager = IntercomManager()
-    @State private var showingConnectSheet = false
+    @EnvironmentObject var intercomManager: IntercomManager
     @State private var showingSettings = false
     @State private var selectedTab: Tab = .talk
 
@@ -33,16 +32,22 @@ struct ContentView: View {
                 }
                 .tag(Tab.users)
         }
-        .sheet(isPresented: $showingConnectSheet) {
+        .sheet(isPresented: $intercomManager.showConnectSheet) {
             ConnectView()
+                .environmentObject(intercomManager)
         }
         .sheet(isPresented: $showingSettings) {
-            SettingsView()
+            iOSSettingsView()
+                .environmentObject(intercomManager)
         }
-        .environmentObject(intercomManager)
+        .alert("Error", isPresented: $intercomManager.showError) {
+            Button("OK") { intercomManager.clearError() }
+        } message: {
+            Text(intercomManager.errorMessage ?? "Unknown error")
+        }
         .onAppear {
             if !intercomManager.isConnected {
-                showingConnectSheet = true
+                intercomManager.showConnectSheet = true
             }
         }
     }
@@ -68,7 +73,7 @@ struct ContentView: View {
                     Spacer()
 
                     // Room info
-                    if let roomId = intercomManager.currentRoomId {
+                    if let roomId = intercomManager.roomId {
                         VStack(spacing: 4) {
                             Text("Room")
                                 .font(.caption)
@@ -134,7 +139,7 @@ struct ContentView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
 
-            Button(action: { showingConnectSheet = true }) {
+            Button(action: { intercomManager.showConnectSheet = true }) {
                 Label("Connect", systemImage: "antenna.radiowaves.left.and.right")
                     .font(.headline)
                     .padding(.horizontal, 24)
@@ -149,15 +154,13 @@ struct ContentView: View {
         Group {
             if intercomManager.isConnected {
                 Button(action: {
-                    Task {
-                        await intercomManager.disconnect()
-                    }
+                    intercomManager.disconnect()
                 }) {
                     Text("Disconnect")
                         .foregroundColor(.red)
                 }
             } else {
-                Button(action: { showingConnectSheet = true }) {
+                Button(action: { intercomManager.showConnectSheet = true }) {
                     Text("Connect")
                 }
             }
@@ -246,18 +249,14 @@ struct ConnectView: View {
     private func connect() {
         isConnecting = true
 
-        Task {
-            do {
-                try await intercomManager.connect(roomId: roomId, displayName: displayName)
-                dismiss()
-            } catch {
-                isConnecting = false
-            }
-        }
+        // Update display name in manager
+        intercomManager.displayName = displayName
+        intercomManager.connectAsClient(to: roomId)
+        dismiss()
     }
 }
 
-struct SettingsView: View {
+struct iOSSettingsView: View {
     @EnvironmentObject var intercomManager: IntercomManager
     @Environment(\.dismiss) private var dismiss
 
@@ -267,6 +266,7 @@ struct SettingsView: View {
                 Section("Audio") {
                     NavigationLink {
                         DeviceSettingsView()
+                            .environmentObject(intercomManager)
                     } label: {
                         HStack {
                             Label("Audio Devices", systemImage: "speaker.wave.2")
@@ -301,22 +301,3 @@ struct SettingsView: View {
         }
     }
 }
-
-// MARK: - App Entry Point
-
-@main
-struct IntercomIOSApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-    }
-}
-
-#if DEBUG
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
-#endif

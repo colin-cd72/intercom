@@ -1,227 +1,364 @@
-import Foundation
+import SwiftUI
 import Combine
 
-/// Main intercom manager that wraps the Rust FFI client/server
+/// Main manager for the intercom system.
+/// Handles connection state, audio, and event processing.
 @MainActor
 public class IntercomManager: ObservableObject {
+    public static let shared = IntercomManager()
 
     // MARK: - Published State
 
-    @Published public private(set) var connectionState: ConnectionState = .disconnected
-    @Published public private(set) var isConnected: Bool = false
-    @Published public private(set) var isTalking: Bool = false
-    @Published public private(set) var currentRoomId: String?
-    @Published public private(set) var currentChannel: String?
-    @Published public private(set) var users: [UserInfo] = []
-    @Published public private(set) var channels: [ChannelInfo] = []
-    @Published public private(set) var inputLevel: Float = 0
-    @Published public private(set) var outputLevel: Float = 0
-    @Published public private(set) var errorMessage: String?
+    @Published public var connectionState: ConnectionState = .disconnected
+    @Published public var isConnected: Bool = false
+    @Published public var isTalking: Bool = false
+    @Published public var roomId: String?
+    @Published public var userId: String?
 
-    // MARK: - Device State
+    @Published public var channels: [ChannelInfo] = []
+    @Published public var users: [UserInfo] = []
+    @Published public var subscribedChannels: Set<String> = []
+    @Published public var currentTalkChannel: String?
 
-    @Published public private(set) var inputDevices: [AudioDeviceInfo] = []
-    @Published public private(set) var outputDevices: [AudioDeviceInfo] = []
+    @Published public var inputDevices: [AudioDeviceInfo] = []
+    @Published public var outputDevices: [AudioDeviceInfo] = []
     @Published public var selectedInputDevice: String?
     @Published public var selectedOutputDevice: String?
-    @Published public var preferDante: Bool = true
 
-    // MARK: - Private Properties
+    @Published public var inputLevel: Float = 0
+    @Published public var outputLevel: Float = 0
+
+    @Published public var errorMessage: String?
+    @Published public var showError: Bool = false
+    @Published public var showConnectSheet: Bool = false
+    @Published public var showAudioSettings: Bool = false
+
+    // MARK: - Configuration
+
+    @AppStorage("displayName") public var displayName: String = "User"
+    @AppStorage("firebaseUrl") public var firebaseUrl: String = ""
+    @AppStorage("pushToTalk") public var pushToTalk: Bool = true
+    @AppStorage("preferDante") public var preferDante: Bool = true
+
+    // MARK: - Private
 
     private var client: IntercomClient?
     private var server: IntercomServer?
-    private var eventCancellables = Set<AnyCancellable>()
+    private var eventPollTimer: Timer?
+    private var isServerMode: Bool = false
 
     // MARK: - Initialization
 
-    public init() {
+    private init() {
         refreshDevices()
     }
 
     // MARK: - Device Management
 
     public func refreshDevices() {
-        // Note: These will call the Rust FFI when integrated
-        // For now, using placeholder implementation
-        inputDevices = []
-        outputDevices = []
+        inputDevices = listInputDevices()
+        outputDevices = listOutputDevices()
 
-        #if DEBUG
-        // Mock devices for development
-        inputDevices = [
-            AudioDeviceInfo(name: "Dante Virtual Soundcard", isDante: true, isDefault: false),
-            AudioDeviceInfo(name: "Built-in Microphone", isDante: false, isDefault: true),
-            AudioDeviceInfo(name: "USB Microphone", isDante: false, isDefault: false)
-        ]
-        outputDevices = [
-            AudioDeviceInfo(name: "Dante Virtual Soundcard", isDante: true, isDefault: false),
-            AudioDeviceInfo(name: "Built-in Output", isDante: false, isDefault: true),
-            AudioDeviceInfo(name: "External Speakers", isDante: false, isDefault: false)
-        ]
-        #endif
-
-        // Auto-select DANTE if preferred
+        // Auto-select DANTE devices if preferred
         if preferDante {
-            if let danteInput = inputDevices.first(where: { $0.isDante }) {
-                selectedInputDevice = danteInput.name
+            if let dante = inputDevices.first(where: { $0.isDante }) {
+                selectedInputDevice = dante.name
             }
-            if let danteOutput = outputDevices.first(where: { $0.isDante }) {
-                selectedOutputDevice = danteOutput.name
+            if let dante = outputDevices.first(where: { $0.isDante }) {
+                selectedOutputDevice = dante.name
             }
+        }
+
+        // Fall back to default devices
+        if selectedInputDevice == nil {
+            selectedInputDevice = inputDevices.first(where: { $0.isDefault })?.name
+        }
+        if selectedOutputDevice == nil {
+            selectedOutputDevice = outputDevices.first(where: { $0.isDefault })?.name
         }
     }
 
-    public func setInputDevice(_ name: String) {
+    public func selectInputDevice(_ name: String) {
         selectedInputDevice = name
-        // TODO: Call Rust FFI to set device
+        try? client?.setInputDevice(deviceName: name)
     }
 
-    public func setOutputDevice(_ name: String) {
+    public func selectOutputDevice(_ name: String) {
         selectedOutputDevice = name
-        // TODO: Call Rust FFI to set device
+        try? client?.setOutputDevice(deviceName: name)
     }
 
-    // MARK: - Connection Management
+    // MARK: - Client Mode
 
-    public func connect(roomId: String, displayName: String) async throws {
+    public func connectAsClient(to roomId: String) {
+        guard !firebaseUrl.isEmpty else {
+            showErrorMessage("Firebase URL not configured. Go to Settings to configure.")
+            return
+        }
+
+        isServerMode = false
         connectionState = .connecting
 
-        // TODO: Create and configure IntercomClient via FFI
-        // let config = ClientConfiguration(
-        //     displayName: displayName,
-        //     inputDevice: selectedInputDevice,
-        //     outputDevice: selectedOutputDevice,
-        //     firebaseUrl: "https://your-project.firebaseio.com",
-        //     pushToTalk: true,
-        //     preferDante: preferDante
-        // )
-        // client = try IntercomClient(config: config)
-        // try client?.connect(roomId: roomId)
+        let config = ClientConfiguration(
+            displayName: displayName,
+            inputDevice: selectedInputDevice,
+            outputDevice: selectedOutputDevice,
+            firebaseUrl: firebaseUrl,
+            pushToTalk: pushToTalk,
+            preferDante: preferDante
+        )
 
-        // Simulated connection for now
-        try await Task.sleep(nanoseconds: 500_000_000)
+        do {
+            client = try IntercomClient(config: config)
+            try client?.initAudio()
+            try client?.connect(roomId: roomId)
+            try client?.startAudio()
 
-        currentRoomId = roomId
-        connectionState = .connected
-        isConnected = true
-    }
+            self.roomId = roomId
+            self.userId = client?.getUserId()
+            self.isConnected = true
+            self.connectionState = .connected
 
-    public func disconnect() async {
-        connectionState = .disconnecting
-
-        // TODO: Call Rust FFI to disconnect
-        // try? client?.disconnect()
-
-        currentRoomId = nil
-        currentChannel = nil
-        isTalking = false
-        connectionState = .disconnected
-        isConnected = false
-        users = []
+            startEventPolling()
+        } catch {
+            connectionState = .failed
+            showErrorMessage("Failed to connect: \(error.localizedDescription)")
+        }
     }
 
     // MARK: - Server Mode
 
-    public func startServer(name: String, password: String? = nil) async throws -> String {
-        // TODO: Create and configure IntercomServer via FFI
-        // let config = ServerConfiguration(...)
-        // server = try IntercomServer(config: config)
-        // try server?.start()
-        // return server?.getRoomId() ?? ""
+    public func startServer(name: String, password: String? = nil, defaultChannels: [String] = ["Channel 1", "Channel 2"]) {
+        guard !firebaseUrl.isEmpty else {
+            showErrorMessage("Firebase URL not configured. Go to Settings to configure.")
+            return
+        }
 
-        return "mock-room-id"
+        isServerMode = true
+        connectionState = .connecting
+
+        let config = ServerConfiguration(
+            name: name,
+            password: password,
+            firebaseUrl: firebaseUrl,
+            maxUsers: 100,
+            defaultChannels: defaultChannels,
+            preferDante: preferDante
+        )
+
+        do {
+            server = try IntercomServer(config: config)
+            try server?.initAudio()
+            try server?.start()
+
+            self.roomId = server?.getRoomId()
+            self.isConnected = true
+            self.connectionState = .connected
+
+            // Refresh channel list
+            self.channels = server?.getChannels() ?? []
+
+            startEventPolling()
+        } catch {
+            connectionState = .failed
+            showErrorMessage("Failed to start server: \(error.localizedDescription)")
+        }
     }
 
-    public func stopServer() async {
-        // TODO: Call Rust FFI to stop server
-        // try? server?.stop()
+    public func stopServer() {
+        stopEventPolling()
+        try? server?.stop()
+        server = nil
+        isConnected = false
+        connectionState = .disconnected
+        roomId = nil
     }
 
-    // MARK: - Channel Management
+    // MARK: - Disconnect
+
+    public func disconnect() {
+        stopEventPolling()
+
+        if isServerMode {
+            try? server?.stop()
+            server = nil
+        } else {
+            try? client?.stopAudio()
+            try? client?.disconnect()
+            client = nil
+        }
+
+        isConnected = false
+        isTalking = false
+        connectionState = .disconnected
+        roomId = nil
+        userId = nil
+        channels = []
+        users = []
+        subscribedChannels = []
+        currentTalkChannel = nil
+    }
+
+    // MARK: - Channels
 
     public func subscribeChannel(_ channelId: String) {
-        // TODO: Call Rust FFI
-        // client?.subscribeChannel(channelId: channelId)
+        client?.subscribeChannel(channelId: channelId)
+        subscribedChannels.insert(channelId)
     }
 
     public func unsubscribeChannel(_ channelId: String) {
-        // TODO: Call Rust FFI
-        // client?.unsubscribeChannel(channelId: channelId)
+        client?.unsubscribeChannel(channelId: channelId)
+        subscribedChannels.remove(channelId)
     }
 
-    // MARK: - Talk Control
-
-    public func startTalk(on channelId: String) throws {
-        guard isConnected else {
-            throw IntercomError.notConnected
+    public func createChannel(name: String) {
+        guard isServerMode else { return }
+        do {
+            let channelId = try server?.createChannel(name: name) ?? ""
+            channels.append(ChannelInfo(id: channelId, name: name, description: nil))
+        } catch {
+            showErrorMessage("Failed to create channel: \(error.localizedDescription)")
         }
+    }
 
-        // TODO: Call Rust FFI
-        // try client?.startTalk(channelId: channelId)
+    public func deleteChannel(_ channelId: String) {
+        guard isServerMode else { return }
+        do {
+            try server?.deleteChannel(channelId: channelId)
+            channels.removeAll { $0.id == channelId }
+        } catch {
+            showErrorMessage("Failed to delete channel: \(error.localizedDescription)")
+        }
+    }
 
-        currentChannel = channelId
-        isTalking = true
+    // MARK: - Talking
+
+    public func startTalk(on channelId: String) {
+        guard !isTalking else { return }
+
+        do {
+            try client?.startTalk(channelId: channelId)
+            isTalking = true
+            currentTalkChannel = channelId
+        } catch {
+            showErrorMessage("Failed to start talking: \(error.localizedDescription)")
+        }
     }
 
     public func stopTalk() {
-        // TODO: Call Rust FFI
-        // try? client?.stopTalk()
+        guard isTalking else { return }
 
-        isTalking = false
+        do {
+            try client?.stopTalk()
+            isTalking = false
+            currentTalkChannel = nil
+        } catch {
+            showErrorMessage("Failed to stop talking: \(error.localizedDescription)")
+        }
+    }
+
+    // MARK: - Event Handling
+
+    private func startEventPolling() {
+        eventPollTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                self?.pollEvents()
+            }
+        }
+    }
+
+    private func stopEventPolling() {
+        eventPollTimer?.invalidate()
+        eventPollTimer = nil
+    }
+
+    private func pollEvents() {
+        let events: [IntercomEvent]
+
+        if isServerMode {
+            events = server?.getPendingEvents() ?? []
+        } else {
+            events = client?.getPendingEvents() ?? []
+        }
+
+        for event in events {
+            handleEvent(event)
+        }
+    }
+
+    private func handleEvent(_ event: IntercomEvent) {
+        switch event {
+        case .connectionStateChanged(let state):
+            connectionState = state
+            isConnected = (state == .connected)
+
+        case .connected(let roomId, let oderId):
+            self.roomId = roomId
+            self.userId = oderId
+            isConnected = true
+            connectionState = .connected
+
+        case .disconnected(let reason):
+            isConnected = false
+            connectionState = .disconnected
+            if !reason.isEmpty {
+                showErrorMessage("Disconnected: \(reason)")
+            }
+
+        case .userJoined(let user):
+            if !users.contains(where: { $0.id == user.id }) {
+                users.append(user)
+            }
+
+        case .userLeft(let oderId):
+            users.removeAll { $0.id == oderId }
+
+        case .userTalkStart(let oderId, _):
+            if let index = users.firstIndex(where: { $0.id == oderId }) {
+                let user = users[index]
+                users[index] = UserInfo(id: user.id, displayName: user.displayName, isTalking: true)
+            }
+
+        case .userTalkStop(let oderId):
+            if let index = users.firstIndex(where: { $0.id == oderId }) {
+                let user = users[index]
+                users[index] = UserInfo(id: user.id, displayName: user.displayName, isTalking: false)
+            }
+
+        case .channelCreated(let channel):
+            if !channels.contains(where: { $0.id == channel.id }) {
+                channels.append(channel)
+            }
+
+        case .channelDeleted(let channelId):
+            channels.removeAll { $0.id == channelId }
+
+        case .talkStarted(let channelId):
+            isTalking = true
+            currentTalkChannel = channelId
+
+        case .talkStopped:
+            isTalking = false
+            currentTalkChannel = nil
+
+        case .audioLevel(let input, let output):
+            inputLevel = input
+            outputLevel = output
+
+        case .error(let message):
+            showErrorMessage(message)
+        }
     }
 
     // MARK: - Error Handling
 
+    private func showErrorMessage(_ message: String) {
+        errorMessage = message
+        showError = true
+    }
+
     public func clearError() {
         errorMessage = nil
-    }
-}
-
-// MARK: - Supporting Types
-
-public enum ConnectionState {
-    case disconnected
-    case connecting
-    case connected
-    case disconnecting
-    case failed
-}
-
-public struct AudioDeviceInfo: Identifiable, Hashable {
-    public let id = UUID()
-    public let name: String
-    public let isDante: Bool
-    public let isDefault: Bool
-}
-
-public struct UserInfo: Identifiable {
-    public let id: String
-    public let displayName: String
-    public var isTalking: Bool
-}
-
-public struct ChannelInfo: Identifiable {
-    public let id: String
-    public let name: String
-    public let description: String?
-}
-
-public enum IntercomError: Error, LocalizedError {
-    case notConnected
-    case alreadyConnected
-    case connectionFailed(String)
-    case audioError(String)
-
-    public var errorDescription: String? {
-        switch self {
-        case .notConnected:
-            return "Not connected to a room"
-        case .alreadyConnected:
-            return "Already connected to a room"
-        case .connectionFailed(let message):
-            return "Connection failed: \(message)"
-        case .audioError(let message):
-            return "Audio error: \(message)"
-        }
+        showError = false
     }
 }

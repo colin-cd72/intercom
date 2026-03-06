@@ -2,10 +2,9 @@ import SwiftUI
 
 /// Main window view for macOS
 struct MainWindow: View {
-    @StateObject private var intercomManager = IntercomManager()
+    @EnvironmentObject var intercomManager: IntercomManager
     @State private var showingDeviceSettings = false
     @State private var showingServerSettings = false
-    @State private var showingConnectSheet = false
     @State private var isServerMode = false
     @State private var selectedChannelId: String = "channel-0"
 
@@ -22,13 +21,19 @@ struct MainWindow: View {
         .toolbar {
             toolbarContent
         }
-        .sheet(isPresented: $showingConnectSheet) {
+        .sheet(isPresented: $intercomManager.showConnectSheet) {
             ConnectSheet(isServerMode: $isServerMode)
+                .environmentObject(intercomManager)
         }
-        .sheet(isPresented: $showingDeviceSettings) {
+        .sheet(isPresented: $intercomManager.showAudioSettings) {
             DeviceSettingsView()
+                .environmentObject(intercomManager)
         }
-        .environmentObject(intercomManager)
+        .alert("Error", isPresented: $intercomManager.showError) {
+            Button("OK") { intercomManager.clearError() }
+        } message: {
+            Text(intercomManager.errorMessage ?? "Unknown error")
+        }
     }
 
     private var sidebar: some View {
@@ -68,7 +73,7 @@ struct MainWindow: View {
             Spacer()
 
             // Room info
-            if let roomId = intercomManager.currentRoomId {
+            if let roomId = intercomManager.roomId {
                 VStack(spacing: 4) {
                     Text("Room ID")
                         .font(.caption)
@@ -102,9 +107,7 @@ struct MainWindow: View {
 
             if intercomManager.isConnected {
                 Button("Disconnect") {
-                    Task {
-                        await intercomManager.disconnect()
-                    }
+                    intercomManager.disconnect()
                 }
                 .buttonStyle(.borderless)
                 .font(.caption)
@@ -119,11 +122,11 @@ struct MainWindow: View {
         switch intercomManager.connectionState {
         case .connected:
             return .green
-        case .connecting, .disconnecting:
+        case .connecting:
             return .yellow
         case .failed:
             return .red
-        case .disconnected:
+        case .disconnected, .closed, .new:
             return .gray
         }
     }
@@ -134,11 +137,9 @@ struct MainWindow: View {
             return "Connected"
         case .connecting:
             return "Connecting..."
-        case .disconnecting:
-            return "Disconnecting..."
         case .failed:
             return "Connection Failed"
-        case .disconnected:
+        case .disconnected, .closed, .new:
             return "Disconnected"
         }
     }
@@ -249,44 +250,17 @@ struct ConnectSheet: View {
         isConnecting = true
         defer { isConnecting = false }
 
-        do {
-            if isServerMode {
-                _ = try await intercomManager.startServer(
-                    name: serverName,
-                    password: password.isEmpty ? nil : password
-                )
-            } else {
-                try await intercomManager.connect(roomId: roomId, displayName: displayName)
-            }
-            dismiss()
-        } catch {
-            // Handle error
-        }
-    }
-}
+        // Update display name in manager
+        intercomManager.displayName = displayName
 
-// MARK: - App Entry Point
-
-@main
-struct IntercomMacApp: App {
-    var body: some Scene {
-        WindowGroup {
-            MainWindow()
+        if isServerMode {
+            intercomManager.startServer(
+                name: serverName,
+                password: password.isEmpty ? nil : password
+            )
+        } else {
+            intercomManager.connectAsClient(to: roomId)
         }
-        .windowStyle(.hiddenTitleBar)
-        .windowResizability(.contentMinSize)
-        .commands {
-            CommandGroup(after: .appSettings) {
-                Button("Audio Devices...") {
-                    // Open settings
-                }
-                .keyboardShortcut(",", modifiers: .command)
-            }
-        }
-
-        Settings {
-            DeviceSettingsView()
-                .environmentObject(IntercomManager())
-        }
+        dismiss()
     }
 }

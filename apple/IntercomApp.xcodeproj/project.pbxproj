@@ -1,0 +1,557 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		/* macOS */
+		MAC001 /* IntercomApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRC001 /* IntercomApp.swift */; };
+		MAC002 /* IntercomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRC002 /* IntercomManager.swift */; };
+		MAC003 /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRC003 /* MainWindow.swift */; };
+		MAC004 /* ChannelListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRC004 /* ChannelListView.swift */; };
+		MAC005 /* TalkButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRC005 /* TalkButtonView.swift */; };
+		MAC006 /* UserListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRC006 /* UserListView.swift */; };
+		MAC007 /* DeviceSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRC007 /* DeviceSettingsView.swift */; };
+		MAC008 /* IntercomBindings.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRC008 /* IntercomBindings.swift */; };
+		/* iOS */
+		IOS001 /* IntercomApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRC001 /* IntercomApp.swift */; };
+		IOS002 /* IntercomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRC002 /* IntercomManager.swift */; };
+		IOS003 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRC009 /* ContentView.swift */; };
+		IOS004 /* ChannelListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRC004 /* ChannelListView.swift */; };
+		IOS005 /* TalkButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRC005 /* TalkButtonView.swift */; };
+		IOS006 /* UserListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRC006 /* UserListView.swift */; };
+		IOS007 /* DeviceSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRC007 /* DeviceSettingsView.swift */; };
+		IOS008 /* IntercomBindings.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRC008 /* IntercomBindings.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		/* Products */
+		PRD001 /* Intercom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Intercom.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		PRD002 /* Intercom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Intercom.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		/* Source Files */
+		SRC001 /* IntercomApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntercomApp.swift; sourceTree = "<group>"; };
+		SRC002 /* IntercomManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntercomManager.swift; sourceTree = "<group>"; };
+		SRC003 /* MainWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindow.swift; sourceTree = "<group>"; };
+		SRC004 /* ChannelListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelListView.swift; sourceTree = "<group>"; };
+		SRC005 /* TalkButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TalkButtonView.swift; sourceTree = "<group>"; };
+		SRC006 /* UserListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListView.swift; sourceTree = "<group>"; };
+		SRC007 /* DeviceSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSettingsView.swift; sourceTree = "<group>"; };
+		SRC008 /* IntercomBindings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntercomBindings.swift; sourceTree = "<group>"; };
+		SRC009 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		/* Resources */
+		RES001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		RES002 /* Intercom.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Intercom.entitlements; sourceTree = "<group>"; };
+		RES003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FRM001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FRM002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		GRP001 = {
+			isa = PBXGroup;
+			children = (
+				GRP002 /* IntercomApp */,
+				GRP007 /* Products */,
+				GRP008 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		GRP002 /* IntercomApp */ = {
+			isa = PBXGroup;
+			children = (
+				GRP003 /* Shared */,
+				GRP005 /* macOS */,
+				GRP006 /* iOS */,
+			);
+			path = IntercomApp;
+			sourceTree = "<group>";
+		};
+		GRP003 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				SRC001 /* IntercomApp.swift */,
+				SRC002 /* IntercomManager.swift */,
+				GRP004 /* Views */,
+				GRP009 /* Generated */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		GRP004 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				SRC004 /* ChannelListView.swift */,
+				SRC005 /* TalkButtonView.swift */,
+				SRC006 /* UserListView.swift */,
+				SRC007 /* DeviceSettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		GRP005 /* macOS */ = {
+			isa = PBXGroup;
+			children = (
+				SRC003 /* MainWindow.swift */,
+				GRP010 /* Resources */,
+			);
+			path = macOS;
+			sourceTree = "<group>";
+		};
+		GRP006 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				SRC009 /* ContentView.swift */,
+				GRP011 /* Resources */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
+		GRP007 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				PRD001 /* Intercom.app */,
+				PRD002 /* Intercom.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		GRP008 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		GRP009 /* Generated */ = {
+			isa = PBXGroup;
+			children = (
+				SRC008 /* IntercomBindings.swift */,
+			);
+			path = Generated;
+			sourceTree = "<group>";
+		};
+		GRP010 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				RES001 /* Info.plist */,
+				RES002 /* Intercom.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		GRP011 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				RES003 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		TGT001 /* Intercom (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CFG003 /* Build configuration list for PBXNativeTarget "Intercom (macOS)" */;
+			buildPhases = (
+				SRC101 /* Sources */,
+				FRM001 /* Frameworks */,
+				RSC101 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Intercom (macOS)";
+			productName = Intercom;
+			productReference = PRD001 /* Intercom.app */;
+			productType = "com.apple.product-type.application";
+		};
+		TGT002 /* Intercom (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CFG004 /* Build configuration list for PBXNativeTarget "Intercom (iOS)" */;
+			buildPhases = (
+				SRC102 /* Sources */,
+				FRM002 /* Frameworks */,
+				RSC102 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Intercom (iOS)";
+			productName = Intercom;
+			productReference = PRD002 /* Intercom.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		PRJ001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					TGT001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					TGT002 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = CFG001 /* Build configuration list for PBXProject "IntercomApp" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = GRP001;
+			productRefGroup = GRP007 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				TGT001 /* Intercom (macOS) */,
+				TGT002 /* Intercom (iOS) */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		RSC101 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		RSC102 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		SRC101 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				MAC001 /* IntercomApp.swift in Sources */,
+				MAC002 /* IntercomManager.swift in Sources */,
+				MAC003 /* MainWindow.swift in Sources */,
+				MAC004 /* ChannelListView.swift in Sources */,
+				MAC005 /* TalkButtonView.swift in Sources */,
+				MAC006 /* UserListView.swift in Sources */,
+				MAC007 /* DeviceSettingsView.swift in Sources */,
+				MAC008 /* IntercomBindings.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		SRC102 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				IOS001 /* IntercomApp.swift in Sources */,
+				IOS002 /* IntercomManager.swift in Sources */,
+				IOS003 /* ContentView.swift in Sources */,
+				IOS004 /* ChannelListView.swift in Sources */,
+				IOS005 /* TalkButtonView.swift in Sources */,
+				IOS006 /* UserListView.swift in Sources */,
+				IOS007 /* DeviceSettingsView.swift in Sources */,
+				IOS008 /* IntercomBindings.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		CFG101 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CFG102 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		CFG201 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = IntercomApp/macOS/Resources/Intercom.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = IntercomApp/macOS/Resources/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Intercom needs microphone access to transmit your voice.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.Intercom;
+				PRODUCT_NAME = Intercom;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		CFG202 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = IntercomApp/macOS/Resources/Intercom.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = IntercomApp/macOS/Resources/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Intercom needs microphone access to transmit your voice.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.Intercom;
+				PRODUCT_NAME = Intercom;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		CFG301 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = IntercomApp/iOS/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Intercom;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Intercom needs microphone access to transmit your voice.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.Intercom;
+				PRODUCT_NAME = Intercom;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CFG302 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = IntercomApp/iOS/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Intercom;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Intercom needs microphone access to transmit your voice.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.Intercom;
+				PRODUCT_NAME = Intercom;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CFG001 /* Build configuration list for PBXProject "IntercomApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CFG101 /* Debug */,
+				CFG102 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CFG003 /* Build configuration list for PBXNativeTarget "Intercom (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CFG201 /* Debug */,
+				CFG202 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CFG004 /* Build configuration list for PBXNativeTarget "Intercom (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CFG301 /* Debug */,
+				CFG302 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = PRJ001 /* Project object */;
+}

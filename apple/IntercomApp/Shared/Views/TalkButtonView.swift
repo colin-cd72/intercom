@@ -149,17 +149,13 @@ public struct TalkButtonView: View {
     private func startTalking() {
         guard intercomManager.isConnected else { return }
 
-        do {
-            try intercomManager.startTalk(on: channelId)
+        intercomManager.startTalk(on: channelId)
 
-            #if os(iOS)
-            // Haptic feedback on iOS
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.impactOccurred()
-            #endif
-        } catch {
-            // Handle error
-        }
+        #if os(iOS)
+        // Haptic feedback on iOS
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
+        #endif
     }
 
     private func stopTalking() {
@@ -171,7 +167,7 @@ public struct TalkButtonView: View {
 struct TalkButtonView_Previews: PreviewProvider {
     static var previews: some View {
         TalkButtonView(channelId: "channel-1")
-            .environmentObject(IntercomManager())
+            .environmentObject(IntercomManager.shared)
             .frame(width: 200, height: 250)
     }
 }

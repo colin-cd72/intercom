@@ -118,7 +118,7 @@ public struct DeviceSettingsView: View {
                     device: device,
                     isSelected: intercomManager.selectedInputDevice == device.name,
                     onSelect: {
-                        intercomManager.setInputDevice(device.name)
+                        intercomManager.selectInputDevice(device.name)
                     }
                 )
             }
@@ -141,7 +141,7 @@ public struct DeviceSettingsView: View {
                     device: device,
                     isSelected: intercomManager.selectedOutputDevice == device.name,
                     onSelect: {
-                        intercomManager.setOutputDevice(device.name)
+                        intercomManager.selectOutputDevice(device.name)
                     }
                 )
             }
@@ -202,7 +202,7 @@ struct DeviceRow: View {
 struct DeviceSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         DeviceSettingsView()
-            .environmentObject(IntercomManager())
+            .environmentObject(IntercomManager.shared)
     }
 }
 #endif
