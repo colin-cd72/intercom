@@ -13,42 +13,46 @@ echo "Building Rust library..."
 
 cd "$RUST_DIR"
 
+# Set up environment for opus/cmake
+export CMAKE_POLICY_VERSION_MINIMUM=3.5
+export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:/opt/homebrew/Cellar/opus/1.6.1/lib/pkgconfig:$PKG_CONFIG_PATH"
+
 # Build for macOS (Apple Silicon)
 echo "Building for macOS (arm64)..."
-cargo build --release --target aarch64-apple-darwin
+cargo build --release --target aarch64-apple-darwin -p intercom-ffi
 
 # Build for macOS (Intel) - optional, comment out if not needed
 echo "Building for macOS (x86_64)..."
-cargo build --release --target x86_64-apple-darwin
+cargo build --release --target x86_64-apple-darwin -p intercom-ffi
 
 # Build for iOS device
 echo "Building for iOS (arm64)..."
-cargo build --release --target aarch64-apple-ios
+cargo build --release --target aarch64-apple-ios -p intercom-ffi
 
 # Build for iOS simulator (Apple Silicon)
 echo "Building for iOS Simulator (arm64)..."
-cargo build --release --target aarch64-apple-ios-sim
+cargo build --release --target aarch64-apple-ios-sim -p intercom-ffi
 
 # Generate Swift bindings
 echo "Generating Swift bindings..."
-cd "$RUST_DIR/crates/intercom-ffi"
+cd "$RUST_DIR"
 
 # Create output directory for bindings
 BINDINGS_DIR="$SCRIPT_DIR/IntercomApp/Shared/Generated"
 mkdir -p "$BINDINGS_DIR"
 
-# Generate bindings using uniffi-bindgen
-cargo run --release --bin uniffi-bindgen generate src/intercom.udl --language swift --out-dir "$BINDINGS_DIR" 2>/dev/null || {
-    echo "Note: uniffi-bindgen binary not found, generating via library..."
-    # Alternative: use the library directly
-    cat > /tmp/generate_bindings.rs << 'BINDGEN_EOF'
-fn main() {
-    uniffi::uniffi_bindgen_main()
-}
-BINDGEN_EOF
-    echo "Swift bindings generation requires uniffi-bindgen CLI"
-    echo "Install with: cargo install uniffi_bindgen"
-}
+# Build dylib for bindgen (uses host target)
+echo "Building dylib for binding generation..."
+cargo build --release -p intercom-ffi
+
+# Generate bindings using uniffi-bindgen from the compiled library
+# With proc macros, we extract the interface from the dylib
+cargo run --release -p intercom-ffi --features cli --bin uniffi-bindgen -- \
+    generate --library "$RUST_DIR/target/release/libintercom_ffi.dylib" \
+    --language swift \
+    --out-dir "$BINDINGS_DIR"
+
+echo "Swift bindings generated at $BINDINGS_DIR"
 
 # Create framework directories
 echo "Creating framework structure..."

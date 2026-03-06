@@ -9,6 +9,11 @@ description = "FFI bindings for the intercom system"
 crate-type = ["cdylib", "staticlib"]
 name = "intercom_ffi"
 
+[[bin]]
+name = "uniffi-bindgen"
+path = "src/bin/uniffi-bindgen.rs"
+required-features = ["cli"]
+
 [dependencies]
 uniffi = { workspace = true }
 tokio = { workspace = true }
@@ -24,3 +29,10 @@ intercom-signaling = { workspace = true }
 
 [build-dependencies]
 uniffi = { workspace = true, features = ["build"] }
+
+[dev-dependencies]
+uniffi = { workspace = true, features = ["bindgen-tests"] }
+
+[features]
+default = []
+cli = ["uniffi/cli", "uniffi/bindgen"]

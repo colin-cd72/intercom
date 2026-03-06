@@ -2,29 +2,47 @@
   "rules": {
     "rooms": {
       "$roomId": {
-        // Anyone can read room info
         ".read": true,
+
+        "info": {
+          ".write": "!data.exists() || data.child('createdBy').val() == auth.uid",
+          ".validate": "newData.hasChildren(['name', 'createdBy', 'createdAt'])"
+        },
 
         "presence": {
           "$userId": {
-            // Users can write their own presence
             ".write": "auth != null && auth.uid == $userId",
-            ".read": true
+            ".validate": "newData.hasChildren(['displayName', 'timestamp'])"
           }
         },
 
         "inbox": {
           "$userId": {
-            // Users can read their own inbox
             ".read": "auth != null && auth.uid == $userId",
-            // Anyone in the room can write to any inbox
             ".write": "auth != null && root.child('rooms').child($roomId).child('presence').child(auth.uid).exists()"
           }
         },
 
         "channels": {
-          ".read": true,
           ".write": "auth != null && root.child('rooms').child($roomId).child('presence').child(auth.uid).exists()"
+        },
+
+        "signaling": {
+          "$fromUser": {
+            "$toUser": {
+              ".read": "auth != null && auth.uid == $toUser",
+              ".write": "auth != null && auth.uid == $fromUser"
+            }
+          }
+        },
+
+        "ice": {
+          "$fromUser": {
+            "$toUser": {
+              ".read": "auth != null && auth.uid == $toUser",
+              ".write": "auth != null && auth.uid == $fromUser"
+            }
+          }
         }
       }
     }
