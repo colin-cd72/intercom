@@ -1,0 +1,15 @@
+[package]
+name = "intercom-codec"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Opus codec wrapper for the intercom system"
+
+[dependencies]
+audiopus = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+intercom-protocol = { workspace = true }
+
+[dev-dependencies]
+rand = { workspace = true }

@@ -1,0 +1,15 @@
+[package]
+name = "intercom-mixer"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Audio mixing and jitter buffer for the intercom system"
+
+[dependencies]
+thiserror = { workspace = true }
+tracing = { workspace = true }
+parking_lot = { workspace = true }
+intercom-protocol = { workspace = true }
+
+[dev-dependencies]
+rand = { workspace = true }

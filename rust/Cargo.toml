@@ -1,0 +1,76 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/intercom-core",
+    "crates/intercom-audio",
+    "crates/intercom-codec",
+    "crates/intercom-mixer",
+    "crates/intercom-transport",
+    "crates/intercom-signaling",
+    "crates/intercom-crypto",
+    "crates/intercom-protocol",
+    "crates/intercom-session",
+    "crates/intercom-ffi",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+authors = ["Intercom Team"]
+
+[workspace.dependencies]
+# Async runtime
+tokio = { version = "1.36", features = ["full"] }
+
+# Audio
+cpal = "0.15"
+
+# Codec - use pre-release for latest features
+audiopus = "0.3.0-rc.0"
+
+# WebRTC - pure Rust implementation
+webrtc = "0.9"
+
+# Encryption
+aes-gcm = "0.10"
+rand = "0.8"
+
+# FFI
+uniffi = "0.27"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+bincode = "1.3"
+
+# HTTP
+reqwest = { version = "0.12", features = ["json", "rustls-tls"] }
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Concurrency
+parking_lot = "0.12"
+crossbeam-channel = "0.5"
+
+# Internal crates
+intercom-core = { path = "crates/intercom-core" }
+intercom-audio = { path = "crates/intercom-audio" }
+intercom-codec = { path = "crates/intercom-codec" }
+intercom-mixer = { path = "crates/intercom-mixer" }
+intercom-transport = { path = "crates/intercom-transport" }
+intercom-signaling = { path = "crates/intercom-signaling" }
+intercom-crypto = { path = "crates/intercom-crypto" }
+intercom-protocol = { path = "crates/intercom-protocol" }
+intercom-session = { path = "crates/intercom-session" }
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"

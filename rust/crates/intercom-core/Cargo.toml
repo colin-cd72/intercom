@@ -1,0 +1,26 @@
+[package]
+name = "intercom-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Main facade for the intercom system"
+
+[dependencies]
+tokio = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+parking_lot = { workspace = true }
+crossbeam-channel = { workspace = true }
+
+intercom-protocol = { workspace = true }
+intercom-audio = { workspace = true }
+intercom-codec = { workspace = true }
+intercom-mixer = { workspace = true }
+intercom-transport = { workspace = true }
+intercom-signaling = { workspace = true }
+intercom-crypto = { workspace = true }
+intercom-session = { workspace = true }
+
+[dev-dependencies]
+tokio-test = "0.4"

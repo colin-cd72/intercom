@@ -1,0 +1,197 @@
+// UniFFI interface definition for the intercom system
+
+namespace intercom {
+    // Initialize the intercom system
+    void init_logging();
+
+    // Get version string
+    string get_version();
+
+    // List audio devices
+    sequence<AudioDeviceInfo> list_input_devices();
+    sequence<AudioDeviceInfo> list_output_devices();
+};
+
+// Audio device information
+dictionary AudioDeviceInfo {
+    string name;
+    boolean is_dante;
+    boolean is_default;
+};
+
+// Client configuration
+dictionary ClientConfiguration {
+    string display_name;
+    string? input_device;
+    string? output_device;
+    string firebase_url;
+    boolean push_to_talk;
+    boolean prefer_dante;
+};
+
+// Server configuration
+dictionary ServerConfiguration {
+    string name;
+    string? password;
+    string firebase_url;
+    u32 max_users;
+    sequence<string> default_channels;
+    boolean prefer_dante;
+};
+
+// Channel information
+dictionary ChannelInfo {
+    string id;
+    string name;
+    string? description;
+};
+
+// User information
+dictionary UserInfo {
+    string id;
+    string display_name;
+    boolean is_talking;
+};
+
+// Connection state
+enum ConnectionState {
+    "New",
+    "Connecting",
+    "Connected",
+    "Disconnected",
+    "Failed",
+    "Closed",
+};
+
+// Intercom events
+[Enum]
+interface IntercomEvent {
+    ConnectionStateChanged(ConnectionState state);
+    Connected(string room_id, string user_id);
+    Disconnected(string reason);
+    UserJoined(UserInfo user);
+    UserLeft(string user_id);
+    UserTalkStart(string user_id, string channel_id);
+    UserTalkStop(string user_id);
+    ChannelCreated(ChannelInfo channel);
+    ChannelDeleted(string channel_id);
+    TalkStarted(string channel_id);
+    TalkStopped();
+    AudioLevel(f32 input_level, f32 output_level);
+    Error(string message);
+};
+
+// Event callback interface
+callback interface EventCallback {
+    void on_event(IntercomEvent event);
+};
+
+// Error types
+[Error]
+enum IntercomError {
+    "AudioError",
+    "ConnectionError",
+    "SignalingError",
+    "NotConnected",
+    "AlreadyConnected",
+    "InvalidConfig",
+    "Timeout",
+};
+
+// Intercom client interface
+interface IntercomClient {
+    [Throws=IntercomError]
+    constructor(ClientConfiguration config);
+
+    // Event handling
+    void set_event_callback(EventCallback callback);
+
+    // Device info
+    string get_user_id();
+    string? get_room_id();
+    boolean is_connected();
+
+    // Audio device management
+    [Throws=IntercomError]
+    void init_audio();
+
+    [Throws=IntercomError]
+    void set_input_device(string device_name);
+
+    [Throws=IntercomError]
+    void set_output_device(string device_name);
+
+    // Connection
+    [Throws=IntercomError]
+    void connect(string room_id);
+
+    [Throws=IntercomError]
+    void disconnect();
+
+    // Channels
+    void subscribe_channel(string channel_id);
+    void unsubscribe_channel(string channel_id);
+
+    // Talking
+    [Throws=IntercomError]
+    void start_talk(string channel_id);
+
+    [Throws=IntercomError]
+    void stop_talk();
+
+    boolean is_talking();
+    string? get_talk_channel();
+
+    // Audio control
+    [Throws=IntercomError]
+    void start_audio();
+
+    [Throws=IntercomError]
+    void stop_audio();
+};
+
+// Intercom server interface
+interface IntercomServer {
+    [Throws=IntercomError]
+    constructor(ServerConfiguration config);
+
+    // Event handling
+    void set_event_callback(EventCallback callback);
+
+    // Server info
+    string get_room_id();
+    sequence<u8> get_encryption_key();
+    boolean is_running();
+
+    // Audio device management
+    [Throws=IntercomError]
+    void init_audio();
+
+    // Server lifecycle
+    [Throws=IntercomError]
+    void start();
+
+    [Throws=IntercomError]
+    void stop();
+
+    // User management
+    sequence<UserInfo> get_users();
+
+    [Throws=IntercomError]
+    void kick_user(string user_id);
+
+    [Throws=IntercomError]
+    void set_user_muted(string channel_id, string user_id, boolean muted);
+
+    [Throws=IntercomError]
+    void set_user_volume(string channel_id, string user_id, f32 volume);
+
+    // Channel management
+    sequence<ChannelInfo> get_channels();
+
+    [Throws=IntercomError]
+    string create_channel(string name);
+
+    [Throws=IntercomError]
+    void delete_channel(string channel_id);
+};

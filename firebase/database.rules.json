@@ -1,0 +1,32 @@
+{
+  "rules": {
+    "rooms": {
+      "$roomId": {
+        // Anyone can read room info
+        ".read": true,
+
+        "presence": {
+          "$userId": {
+            // Users can write their own presence
+            ".write": "auth != null && auth.uid == $userId",
+            ".read": true
+          }
+        },
+
+        "inbox": {
+          "$userId": {
+            // Users can read their own inbox
+            ".read": "auth != null && auth.uid == $userId",
+            // Anyone in the room can write to any inbox
+            ".write": "auth != null && root.child('rooms').child($roomId).child('presence').child(auth.uid).exists()"
+          }
+        },
+
+        "channels": {
+          ".read": true,
+          ".write": "auth != null && root.child('rooms').child($roomId).child('presence').child(auth.uid).exists()"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+[package]
+name = "intercom-crypto"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Encryption for the intercom system using AES-256-GCM"
+
+[dependencies]
+aes-gcm = { workspace = true }
+rand = { workspace = true }
+thiserror = { workspace = true }

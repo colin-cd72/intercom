@@ -1,0 +1,17 @@
+[package]
+name = "intercom-audio"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Audio I/O for the intercom system using cpal"
+
+[dependencies]
+cpal = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+crossbeam-channel = { workspace = true }
+parking_lot = { workspace = true }
+intercom-protocol = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }

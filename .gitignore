@@ -1,0 +1,60 @@
+# Rust
+/rust/target/
+**/*.rs.bk
+Cargo.lock
+
+# macOS
+.DS_Store
+*.xcuserstate
+xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# Xcode
+DerivedData/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcuserstate
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# iOS
+Pods/
+
+# Windows/Qt
+*.user
+*.autosave
+build/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.vcxproj*
+*.sln
+x64/
+Debug/
+Release/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build outputs
+*.a
+*.dylib
+*.so
+*.dll
+*.lib
+*.o
+*.obj
+
+# Generated files
+*.xcframework/
+IntercomCore.xcframework/
